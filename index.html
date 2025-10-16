@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Oficina Bennys</title>
+    
+    <!-- Meta tags para PWA -->
+    <meta name="theme-color" content="#0f172a"/>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #020617; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #2563eb; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+        .modal-bg { background-color: rgba(0,0,0,0.7); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-fade-in {
+            animation: fadeIn 0.2s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div class="container mx-auto max-w-lg p-4 min-h-screen flex flex-col bg-slate-900">
+        <header class="text-center mb-4 relative">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-slate-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c.94-1.543-.826-3.31-2.37-2.37a1.724 1.724 0 002.572-1.065z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            <h1 class="text-2xl font-bold text-blue-400">Oficina Bennys</h1>
+            <p class="text-gray-400 text-sm">Ordem de Serviço Digital</p>
+        </header>
+        
+        <div class="bg-slate-800 p-4 rounded-lg shadow-lg mb-4">
+            <div class="flex space-x-2 mb-4">
+                 <input type="text" id="search-input" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Pesquisar Serviço...">
+                 <button id="manage-items-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Gerir</button>
+            </div>
+            
+            <label for="servico-select" class="block mb-2 text-sm font-medium text-gray-300">Selecione o Serviço:</label>
+            <div class="flex space-x-2">
+                <select id="servico-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                </select>
+                <button id="add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">
+                    Adicionar
+                </button>
+            </div>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-lg shadow-lg flex-grow flex flex-col">
+            <h2 class="text-xl font-bold mb-4 border-b border-slate-700 pb-2">Itens do Pedido</h2>
+            <ul id="order-list" class="space-y-3 overflow-y-auto flex-grow h-32">
+                <li id="empty-message" class="text-center text-gray-500 py-4">Nenhum item adicionado.</li>
+            </ul>
+        </div>
+        <footer class="mt-4 py-4 px-6 rounded-b-xl">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xl font-bold text-gray-300">TOTAL:</span>
+                <span id="total-price" class="text-2xl font-bold text-cyan-400">R$ 0,00</span>
+            </div>
+            <button id="clear-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">
+                Limpar Ordem
+            </button>
+        </footer>
+    </div>
+    
+    <!-- Modal Gerir Itens -->
+    <div id="manage-modal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 hidden modal-fade-in">
+        <div class="bg-slate-800 rounded-lg shadow-2xl w-full max-w-md">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Gerir Itens de Serviço</h2>
+                <button id="close-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="p-4 space-y-4">
+                <h3 class="font-semibold">Adicionar Novo Item</h3>
+                <div>
+                    <label for="new-item-name" class="block mb-1 text-sm font-medium text-gray-400">Nome do Item</label>
+                    <input type="text" id="new-item-name" placeholder="Ex: Reparo Avançado" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                </div>
+                <div>
+                    <label for="new-item-price" class="block mb-1 text-sm font-medium text-gray-400">Preço</label>
+                    <input type="number" id="new-item-price" placeholder="Ex: 15000" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                </div>
+                <div>
+                    <label for="category-select" class="block mb-1 text-sm font-medium text-gray-400">Categoria</label>
+                    <select id="category-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full"></select>
+                </div>
+                <div>
+                   <input type="text" id="new-category-name-input" placeholder="Nome da Nova Categoria" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full hidden">
+                </div>
+                <button id="save-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Salvar Novo Item</button>
+            </div>
+            <div class="p-4 border-t border-slate-700">
+                 <h3 class="font-semibold mb-2">Remover Item Existente</h3>
+                 <div class="max-h-48 overflow-y-auto" id="deletable-items-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DA ORDEM DE SERVIÇO (ADAPTADA PARA NAVEGADOR) ---
+        // A lógica é a mesma da versão desktop, mas não usa 'electronAPI'.
+        
+        const searchInput = document.getElementById('search-input');
+        const servicoSelect = document.getElementById('servico-select');
+        const addBtn = document.getElementById('add-btn');
+        const clearBtn = document.getElementById('clear-btn');
+        const orderList = document.getElementById('order-list');
+        const totalPriceEl = document.getElementById('total-price');
+        const emptyMessage = document.getElementById('empty-message');
+        
+        const manageItemsBtn = document.getElementById('manage-items-btn');
+        const manageModal = document.getElementById('manage-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const saveNewItemBtn = document.getElementById('save-new-item-btn');
+        const newItemName = document.getElementById('new-item-name');
+        const newItemPrice = document.getElementById('new-item-price');
+        const categorySelect = document.getElementById('category-select');
+        const newCategoryNameInput = document.getElementById('new-category-name-input');
+        const deletableItemsList = document.getElementById('deletable-items-list');
+
+        let servicos = [];
+        let ordemAtual = [];
+
+        function carregarServicos() {
+            const servicosSalvos = localStorage.getItem('bennys_servicos_v2');
+            if (servicosSalvos && JSON.parse(servicosSalvos).length > 0) {
+                servicos = JSON.parse(servicosSalvos);
+            } else {
+                servicos = [
+                    { categoria: 'Performance e Motor', itens: [ { nome: 'Motor', preco: 18000 }, { nome: 'Freios', preco: 18000 }, { nome: 'Transmissão', preco: 19000 }, { nome: 'Suspensão', preco: 5000 }, { nome: 'Turbo', preco: 30000 }, ]},
+                    { categoria: 'Estética e Customização', itens: [ { nome: 'Buzina', preco: 800 }, { nome: 'Farol', preco: 18000 }, { nome: 'Placa', preco: 2500 }, { nome: 'Neon', preco: 10000 }, { nome: 'Pintura', preco: 6000 }, { nome: 'Pintura Cromada', preco: 9000 }, { nome: 'Chassi', preco: 4000 }, { nome: 'Rodas', preco: 13000 }, ]},
+                    { categoria: 'Segurança e Utilidades', itens: [ { nome: 'Blindagem', preco: 30000 }, { nome: 'Rastreador', preco: 10000 }, ]},
+                    { categoria: 'Reparos e Pacotes', itens: [ { nome: 'Reparo Sul', preco: 5000 }, { nome: 'Reparo Norte', preco: 8000 }, { nome: 'Full Tuning Carro', preco: 90000 }, { nome: 'Full Tuning Moto', preco: 60000 }, ]},
+                    { categoria: 'Outros', itens: [ { nome: 'Outros', preco: 4000 }, ]}
+                ];
+                salvarServicos();
+            }
+        }
+
+        function salvarServicos() {
+            localStorage.setItem('bennys_servicos_v2', JSON.stringify(servicos));
+        }
+
+        function popularServicos(filtro = '') {
+            servicoSelect.innerHTML = '';
+            const termoBusca = filtro.toLowerCase().trim();
+            let encontrouAlgo = false;
+            servicos.forEach(grupo => {
+                const itensFiltrados = grupo.itens.filter(item => item.nome.toLowerCase().includes(termoBusca));
+                if (itensFiltrados.length > 0) {
+                    encontrouAlgo = true;
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = grupo.categoria;
+                    itensFiltrados.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.nome;
+                        option.textContent = `${item.nome} - ${formatarMoeda(item.preco)}`;
+                        optgroup.appendChild(option);
+                    });
+                    servicoSelect.appendChild(optgroup);
+                }
+            });
+            if (!encontrouAlgo && termoBusca.length > 0) {
+                const option = document.createElement('option');
+                option.textContent = 'Nenhum serviço encontrado';
+                option.disabled = true;
+                servicoSelect.appendChild(option);
+            } else if (servicoSelect.innerHTML === '') {
+                 servicos.forEach(grupo => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = grupo.categoria;
+                    grupo.itens.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.nome;
+                        option.textContent = `${item.nome} - ${formatarMoeda(item.preco)}`;
+                        optgroup.appendChild(option);
+                    });
+                    servicoSelect.appendChild(optgroup);
+                });
+            }
+        }
+
+        function renderizarOrdem() {
+            orderList.innerHTML = ''; 
+            if (ordemAtual.length === 0) {
+                orderList.appendChild(emptyMessage);
+            } else {
+                ordemAtual.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center bg-slate-700 p-3 rounded-md';
+                    li.innerHTML = `<span>${item.nome} - ${formatarMoeda(item.preco)}</span><button data-index="${index}" class="remover-item-btn text-red-400 hover:text-red-300 font-bold text-2xl leading-none px-2">&times;</button>`;
+                    orderList.appendChild(li);
+                });
+            }
+            calcularEAtualizarTotal();
+        }
+
+        function adicionarItemNaOrdem() {
+            const nomeServico = servicoSelect.value;
+            if (!nomeServico || servicoSelect.selectedOptions[0]?.disabled) return;
+            let servicoEncontrado = null;
+            for (const grupo of servicos) {
+                servicoEncontrado = grupo.itens.find(i => i.nome === nomeServico);
+                if (servicoEncontrado) break;
+            }
+            if (servicoEncontrado) {
+                ordemAtual.push(servicoEncontrado);
+                renderizarOrdem();
+            }
+        }
+
+        function calcularEAtualizarTotal() {
+            const total = ordemAtual.reduce((soma, item) => soma + item.preco, 0);
+            totalPriceEl.textContent = formatarMoeda(total);
+        }
+
+        function limparOrdem() {
+            ordemAtual = [];
+            renderizarOrdem();
+        }
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+        
+        function abrirModalGerenciamento() {
+            popularListaDeletaveis();
+            popularCategorySelect();
+            newCategoryNameInput.classList.add('hidden');
+            manageModal.classList.remove('hidden');
+        }
+
+        function fecharModalGerenciamento() {
+            manageModal.classList.add('hidden');
+        }
+
+        function popularCategorySelect() {
+            categorySelect.innerHTML = '<option value="">-- Selecione uma Categoria --</option>';
+            const categorias = servicos.map(g => g.categoria).sort();
+            categorias.forEach(cat => {
+                categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+            categorySelect.innerHTML += '<option value="_new_">-- Criar Nova Categoria --</option>';
+        }
+
+        function salvarNovoItem() {
+            const nome = newItemName.value.trim();
+            const preco = parseFloat(newItemPrice.value);
+            let categoria = '';
+
+            if (categorySelect.value === '_new_') {
+                categoria = newCategoryNameInput.value.trim();
+            } else {
+                categoria = categorySelect.value;
+            }
+
+            if (!nome || isNaN(preco) || preco <= 0 || !categoria) {
+                alert('Por favor, preencha todos os campos com valores válidos.');
+                return;
+            }
+
+            let grupoExistente = servicos.find(g => g.categoria.toLowerCase() === categoria.toLowerCase());
+
+            if (grupoExistente) {
+                grupoExistente.itens.push({ nome, preco });
+            } else {
+                servicos.push({ categoria: categoria, itens: [{ nome, preco }] });
+            }
+            
+            salvarServicos();
+            popularServicos();
+            
+            newItemName.value = '';
+            newItemPrice.value = '';
+            newCategoryNameInput.value = '';
+            fecharModalGerenciamento();
+        }
+        
+        function popularListaDeletaveis() {
+            deletableItemsList.innerHTML = '';
+            if (servicos.length === 0 || servicos.every(g => g.itens.length === 0)) {
+                 deletableItemsList.innerHTML = '<p class="text-gray-500 text-center">Nenhum item para remover.</p>';
+                 return;
+            }
+            servicos.forEach(grupo => {
+                grupo.itens.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center bg-slate-700 p-2 rounded mb-2';
+                    div.innerHTML = `<span>${item.nome} <span class="text-xs text-gray-400">(${grupo.categoria})</span></span>
+                                    <button data-cat="${grupo.categoria}" data-item="${item.nome}" class="remover-catalogo-btn bg-red-600 hover:bg-red-700 text-white text-xs py-1 px-2 rounded">Remover</button>`;
+                    deletableItemsList.appendChild(div);
+                });
+            });
+        }
+        
+        function removerItemDoCatalogo(categoriaNome, itemNome) {
+            const grupoIndex = servicos.findIndex(g => g.categoria === categoriaNome);
+            if (grupoIndex > -1) {
+                const itemIndex = servicos[grupoIndex].itens.findIndex(i => i.nome === itemNome);
+                if (itemIndex > -1) {
+                    servicos[grupoIndex].itens.splice(itemIndex, 1);
+                    if (servicos[grupoIndex].itens.length === 0) {
+                        servicos.splice(grupoIndex, 1);
+                    }
+                }
+            }
+            salvarServicos();
+            popularServicos();
+            popularListaDeletaveis();
+        }
+
+        addBtn.addEventListener('click', adicionarItemNaOrdem);
+        clearBtn.addEventListener('click', limparOrdem);
+        searchInput.addEventListener('input', () => popularServicos(searchInput.value));
+        manageItemsBtn.addEventListener('click', abrirModalGerenciamento);
+        closeModalBtn.addEventListener('click', fecharModalGerenciamento);
+        saveNewItemBtn.addEventListener('click', salvarNovoItem);
+        
+        categorySelect.addEventListener('change', () => {
+            if (categorySelect.value === '_new_') {
+                newCategoryNameInput.classList.remove('hidden');
+            } else {
+                newCategoryNameInput.classList.add('hidden');
+            }
+        });
+
+        orderList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remover-item-btn')) {
+                ordemAtual.splice(e.target.dataset.index, 1);
+                renderizarOrdem();
+            }
+        });
+
+        deletableItemsList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remover-catalogo-btn')) {
+                const cat = e.target.dataset.cat;
+                const item = e.target.dataset.item;
+                if (confirm(`Tem a certeza que deseja remover "${item}" do catálogo?`)) {
+                    removerItemDoCatalogo(cat, item);
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarServicos();
+            popularServicos();
+            renderizarOrdem();
+        });
+
+        // --- LÓGICA DO PWA (SERVICE WORKER) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    console.log('ServiceWorker registado com sucesso:', registration.scope);
+                }, err => {
+                    console.log('Registo do ServiceWorker falhou:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+
