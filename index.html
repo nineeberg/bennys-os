@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Oficina Bennys</title>
     
-    <!-- Meta tags para PWA -->
     <meta name="theme-color" content="#0f172a"/>
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icons/icon-192x192.png">
@@ -28,53 +27,121 @@
         .modal-fade-in {
             animation: fadeIn 0.2s ease-out forwards;
         }
+        .tab-btn.active {
+            background-color: #2563eb;
+            color: white;
+        }
     </style>
 </head>
 <body class="text-white">
 
-    <div class="container mx-auto max-w-lg p-4 min-h-screen flex flex-col bg-slate-900">
-        <header class="text-center mb-4 relative">
+    <div class="container mx-auto max-w-lg min-h-screen flex flex-col bg-slate-900">
+        <!-- CABEÇALHO -->
+        <header class="text-center p-4 pt-6 relative">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-slate-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c.94-1.543-.826-3.31-2.37-2.37a1.724 1.724 0 002.572-1.065z"></path>
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
             </svg>
             <h1 class="text-2xl font-bold text-blue-400">Oficina Bennys</h1>
-            <p class="text-gray-400 text-sm">Ordem de Serviço Digital</p>
+            <p class="text-gray-400 text-sm">Painel Digital</p>
         </header>
-        
-        <div class="bg-slate-800 p-4 rounded-lg shadow-lg mb-4">
-            <div class="flex space-x-2 mb-4">
-                 <input type="text" id="search-input" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Pesquisar Serviço...">
-                 <button id="manage-items-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Gerir</button>
-            </div>
-            
-            <label for="servico-select" class="block mb-2 text-sm font-medium text-gray-300">Selecione o Serviço:</label>
-            <div class="flex space-x-2">
-                <select id="servico-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                </select>
-                <button id="add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">
-                    Adicionar
-                </button>
+
+        <!-- NAVEGAÇÃO POR ABAS -->
+        <div class="p-4">
+            <div class="flex bg-slate-800 rounded-lg p-1">
+                <button id="tab-servicos" class="tab-btn active w-1/2 p-2 rounded-md font-semibold transition-colors duration-200">Serviços</button>
+                <button id="tab-vendas" class="tab-btn w-1/2 p-2 rounded-md font-semibold transition-colors duration-200 text-slate-400">Vendas</button>
             </div>
         </div>
-        <div class="bg-slate-800 p-4 rounded-lg shadow-lg flex-grow flex flex-col">
-            <h2 class="text-xl font-bold mb-4 border-b border-slate-700 pb-2">Itens do Pedido</h2>
-            <ul id="order-list" class="space-y-3 overflow-y-auto flex-grow h-32">
-                <li id="empty-message" class="text-center text-gray-500 py-4">Nenhum item adicionado.</li>
-            </ul>
-        </div>
-        <footer class="mt-4 py-4 px-6 rounded-b-xl">
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-xl font-bold text-gray-300">TOTAL:</span>
-                <span id="total-price" class="text-2xl font-bold text-cyan-400">R$ 0,00</span>
+
+        <div class="flex-grow flex flex-col p-4 pt-0">
+            <!-- CONTEÚDO DA ABA DE SERVIÇOS -->
+            <div id="servicos-tab">
+                <div class="bg-slate-800 p-4 rounded-lg shadow-lg mb-4">
+                    <div class="flex space-x-2 mb-4">
+                        <input type="text" id="search-input" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Pesquisar Serviço...">
+                        <button id="manage-items-btn" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Gerir</button>
+                    </div>
+                    <label for="servico-select" class="block mb-2 text-sm font-medium text-gray-300">Selecione o Serviço:</label>
+                    <div class="flex space-x-2">
+                        <select id="servico-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></select>
+                        <button id="add-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Adicionar</button>
+                    </div>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg shadow-lg flex-grow flex flex-col">
+                    <h2 class="text-xl font-bold mb-4 border-b border-slate-700 pb-2">Itens do Pedido</h2>
+                    <ul id="order-list" class="space-y-3 overflow-y-auto flex-grow h-32">
+                        <li id="empty-message" class="text-center text-gray-500 py-4">Nenhum item adicionado.</li>
+                    </ul>
+                </div>
+                <footer class="mt-4 py-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xl font-bold text-gray-300">TOTAL:</span>
+                        <span id="total-price" class="text-2xl font-bold text-cyan-400">R$ 0,00</span>
+                    </div>
+                    <button id="clear-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Limpar Ordem</button>
+                </footer>
             </div>
-            <button id="clear-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">
-                Limpar Ordem
-            </button>
-        </footer>
+
+            <!-- CONTEÚDO DA ABA DE VENDAS -->
+            <div id="vendas-tab" class="hidden">
+                 <div class="bg-slate-800 p-4 rounded-lg shadow-lg mb-4">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="produto-select" class="block mb-2 text-sm font-medium text-gray-300">Tipo de Produto:</label>
+                            <select id="produto-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+                                <option value="Carro">Carro</option>
+                                <option value="Kit Reparo">Kit Reparo</option>
+                                <option value="Pneu">Pneu</option>
+                            </select>
+                        </div>
+
+                        <div id="carro-select-container" class="hidden">
+                            <label for="carro-select" class="block mb-2 text-sm font-medium text-gray-300">Selecione o Carro:</label>
+                            <select id="carro-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></select>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                 <label for="produto-preco" id="produto-preco-label" class="block mb-2 text-sm font-medium text-gray-300">Valor:</label>
+                                 <input type="number" id="produto-preco" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Valor">
+                            </div>
+                             <div>
+                                <label for="produto-quantidade" class="block mb-2 text-sm font-medium text-gray-300">Quantidade:</label>
+                                <input type="number" id="produto-quantidade" value="1" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Qtd.">
+                            </div>
+                        </div>
+                    </div>
+                    <button id="add-venda-btn" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Adicionar Venda</button>
+                </div>
+                <div class="bg-slate-800 p-4 rounded-lg shadow-lg flex-grow flex flex-col">
+                    <h2 class="text-xl font-bold mb-4 border-b border-slate-700 pb-2">Itens Vendidos</h2>
+                    <ul id="sales-list" class="space-y-3 overflow-y-auto flex-grow h-32">
+                        <li id="empty-sales-message" class="text-center text-gray-500 py-4">Nenhum item vendido.</li>
+                    </ul>
+                </div>
+                <footer class="mt-4 py-4">
+                    <div class="space-y-2 mb-4 text-right">
+                        <div class="flex justify-between items-center">
+                            <span class="text-md text-gray-400">Total Vendido:</span>
+                            <span id="sales-total-vendido" class="text-lg font-semibold text-white">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-md text-gray-400">Comissão (Oficina):</span>
+                            <span id="sales-total-comissao" class="text-lg font-semibold text-red-400">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-slate-700 pt-2 mt-2">
+                            <span class="text-xl font-bold text-gray-300">A RECEBER:</span>
+                            <span id="sales-total-receber" class="text-2xl font-bold text-green-400">R$ 0,00</span>
+                        </div>
+                    </div>
+                    <button id="clear-vendas-btn" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">Limpar Vendas</button>
+                </footer>
+            </div>
+        </div>
     </div>
     
-    <!-- Modal Gerir Itens -->
+    <!-- Modal Gerir Itens (para Serviços) -->
     <div id="manage-modal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 hidden modal-fade-in">
         <div class="bg-slate-800 rounded-lg shadow-2xl w-full max-w-md">
             <div class="p-4 border-b border-slate-700 flex justify-between items-center">
@@ -108,7 +175,7 @@
     </div>
 
     <script>
-        // --- LÓGICA DA ORDEM DE SERVIÇO (ADAPTADA PARA NAVEGADOR) ---
+        // --- LÓGICA GERAL E DE SERVIÇOS ---
         
         const searchInput = document.getElementById('search-input');
         const servicoSelect = document.getElementById('servico-select');
@@ -146,11 +213,7 @@
                 salvarServicos();
             }
         }
-
-        function salvarServicos() {
-            localStorage.setItem('bennys_servicos_v2', JSON.stringify(servicos));
-        }
-
+        function salvarServicos() { localStorage.setItem('bennys_servicos_v2', JSON.stringify(servicos)); }
         function popularServicos(filtro = '') {
             servicoSelect.innerHTML = '';
             const termoBusca = filtro.toLowerCase().trim();
@@ -189,22 +252,19 @@
                 });
             }
         }
-
         function renderizarOrdem() {
             orderList.innerHTML = ''; 
-            if (ordemAtual.length === 0) {
-                orderList.appendChild(emptyMessage);
-            } else {
+            if (ordemAtual.length === 0) { orderList.appendChild(emptyMessage); }
+            else {
                 ordemAtual.forEach((item, index) => {
                     const li = document.createElement('li');
                     li.className = 'flex justify-between items-center bg-slate-700 p-3 rounded-md';
-                    li.innerHTML = `<span>${item.nome} - ${formatarMoeda(item.preco)}</span><button data-index="${index}" class="remover-item-btn text-red-400 hover:text-red-300 font-bold text-2xl leading-none px-2">&times;</button>`;
+                    li.innerHTML = `<span>${item.nome}</span><span>${formatarMoeda(item.preco)}</span><button data-index="${index}" class="remover-item-btn text-red-400 hover:text-red-300 font-bold text-2xl leading-none px-2">&times;</button>`;
                     orderList.appendChild(li);
                 });
             }
             calcularEAtualizarTotal();
         }
-
         function adicionarItemNaOrdem() {
             const nomeServico = servicoSelect.value;
             if (!nomeServico || servicoSelect.selectedOptions[0]?.disabled) return;
@@ -213,141 +273,274 @@
                 servicoEncontrado = grupo.itens.find(i => i.nome === nomeServico);
                 if (servicoEncontrado) break;
             }
-            if (servicoEncontrado) {
-                ordemAtual.push(servicoEncontrado);
-                renderizarOrdem();
-            }
+            if (servicoEncontrado) { ordemAtual.push(servicoEncontrado); renderizarOrdem(); }
         }
-
         function calcularEAtualizarTotal() {
             const total = ordemAtual.reduce((soma, item) => soma + item.preco, 0);
             totalPriceEl.textContent = formatarMoeda(total);
         }
-
-        function limparOrdem() {
-            ordemAtual = [];
-            renderizarOrdem();
-        }
-
-        function formatarMoeda(valor) {
-            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-        
+        function limparOrdem() { ordemAtual = []; renderizarOrdem(); }
+        function formatarMoeda(valor) { return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
         function abrirModalGerenciamento() {
             popularListaDeletaveis();
             popularCategorySelect();
             newCategoryNameInput.classList.add('hidden');
             manageModal.classList.remove('hidden');
         }
-
-        function fecharModalGerenciamento() {
-            manageModal.classList.add('hidden');
-        }
-
+        function fecharModalGerenciamento() { manageModal.classList.add('hidden'); }
         function popularCategorySelect() {
             categorySelect.innerHTML = '<option value="">-- Selecione uma Categoria --</option>';
             const categorias = servicos.map(g => g.categoria).sort();
-            categorias.forEach(cat => {
-                categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
-            });
+            categorias.forEach(cat => { categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`; });
             categorySelect.innerHTML += '<option value="_new_">-- Criar Nova Categoria --</option>';
         }
-
         function salvarNovoItem() {
             const nome = newItemName.value.trim();
             const preco = parseFloat(newItemPrice.value);
-            let categoria = '';
-
-            if (categorySelect.value === '_new_') {
-                categoria = newCategoryNameInput.value.trim();
-            } else {
-                categoria = categorySelect.value;
-            }
-
-            if (!nome || isNaN(preco) || preco <= 0 || !categoria) {
-                alert('Por favor, preencha todos os campos com valores válidos.');
-                return;
-            }
-
+            let categoria = categorySelect.value === '_new_' ? newCategoryNameInput.value.trim() : categorySelect.value;
+            if (!nome || isNaN(preco) || preco <= 0 || !categoria) { alert('Por favor, preencha todos os campos com valores válidos.'); return; }
             let grupoExistente = servicos.find(g => g.categoria.toLowerCase() === categoria.toLowerCase());
-
-            if (grupoExistente) {
-                grupoExistente.itens.push({ nome, preco });
-            } else {
-                servicos.push({ categoria: categoria, itens: [{ nome, preco }] });
-            }
-            
-            salvarServicos();
-            popularServicos();
-            
-            newItemName.value = '';
-            newItemPrice.value = '';
-            newCategoryNameInput.value = '';
+            if (grupoExistente) { grupoExistente.itens.push({ nome, preco }); }
+            else { servicos.push({ categoria: categoria, itens: [{ nome, preco }] }); }
+            salvarServicos(); popularServicos();
+            newItemName.value = ''; newItemPrice.value = ''; newCategoryNameInput.value = '';
             fecharModalGerenciamento();
         }
-        
         function popularListaDeletaveis() {
             deletableItemsList.innerHTML = '';
-            if (servicos.length === 0 || servicos.every(g => g.itens.length === 0)) {
-                 deletableItemsList.innerHTML = '<p class="text-gray-500 text-center">Nenhum item para remover.</p>';
-                 return;
-            }
+            if (servicos.length === 0 || servicos.every(g => g.itens.length === 0)) { deletableItemsList.innerHTML = '<p class="text-gray-500 text-center">Nenhum item para remover.</p>'; return; }
             servicos.forEach(grupo => {
                 grupo.itens.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'flex justify-between items-center bg-slate-700 p-2 rounded mb-2';
-                    div.innerHTML = `<span>${item.nome} <span class="text-xs text-gray-400">(${grupo.categoria})</span></span>
-                                    <button data-cat="${grupo.categoria}" data-item="${item.nome}" class="remover-catalogo-btn bg-red-600 hover:bg-red-700 text-white text-xs py-1 px-2 rounded">Remover</button>`;
+                    div.innerHTML = `<span>${item.nome} <span class="text-xs text-gray-400">(${grupo.categoria})</span></span><button data-cat="${grupo.categoria}" data-item="${item.nome}" class="remover-catalogo-btn bg-red-600 hover:bg-red-700 text-white text-xs py-1 px-2 rounded">Remover</button>`;
                     deletableItemsList.appendChild(div);
                 });
             });
         }
-        
         function removerItemDoCatalogo(categoriaNome, itemNome) {
             const grupoIndex = servicos.findIndex(g => g.categoria === categoriaNome);
             if (grupoIndex > -1) {
                 const itemIndex = servicos[grupoIndex].itens.findIndex(i => i.nome === itemNome);
                 if (itemIndex > -1) {
                     servicos[grupoIndex].itens.splice(itemIndex, 1);
-                    if (servicos[grupoIndex].itens.length === 0) {
-                        servicos.splice(grupoIndex, 1);
-                    }
+                    if (servicos[grupoIndex].itens.length === 0) { servicos.splice(grupoIndex, 1); }
                 }
             }
-            salvarServicos();
-            popularServicos();
-            popularListaDeletaveis();
+            salvarServicos(); popularServicos(); popularListaDeletaveis();
         }
-
         addBtn.addEventListener('click', adicionarItemNaOrdem);
         clearBtn.addEventListener('click', limparOrdem);
         searchInput.addEventListener('input', () => popularServicos(searchInput.value));
         manageItemsBtn.addEventListener('click', abrirModalGerenciamento);
         closeModalBtn.addEventListener('click', fecharModalGerenciamento);
         saveNewItemBtn.addEventListener('click', salvarNovoItem);
-        
-        categorySelect.addEventListener('change', () => {
-            if (categorySelect.value === '_new_') {
-                newCategoryNameInput.classList.remove('hidden');
-            } else {
-                newCategoryNameInput.classList.add('hidden');
-            }
-        });
-
+        categorySelect.addEventListener('change', () => { newCategoryNameInput.classList.toggle('hidden', categorySelect.value !== '_new_'); });
         orderList.addEventListener('click', (e) => {
             if (e.target.classList.contains('remover-item-btn')) {
                 ordemAtual.splice(e.target.dataset.index, 1);
                 renderizarOrdem();
             }
         });
-
         deletableItemsList.addEventListener('click', (e) => {
             if (e.target.classList.contains('remover-catalogo-btn')) {
                 const cat = e.target.dataset.cat;
                 const item = e.target.dataset.item;
-                if (confirm(`Tem a certeza que deseja remover "${item}" do catálogo?`)) {
-                    removerItemDoCatalogo(cat, item);
+                if (confirm(`Tem a certeza que deseja remover "${item}" do catálogo?`)) { removerItemDoCatalogo(cat, item); }
+            }
+        });
+
+        // --- LÓGICA DAS ABAS ---
+        const tabServicos = document.getElementById('tab-servicos');
+        const tabVendas = document.getElementById('tab-vendas');
+        const servicosContent = document.getElementById('servicos-tab');
+        const vendasContent = document.getElementById('vendas-tab');
+        
+        tabServicos.addEventListener('click', () => {
+            servicosContent.classList.remove('hidden');
+            vendasContent.classList.add('hidden');
+            tabServicos.classList.add('active');
+            tabVendas.classList.remove('active');
+            tabVendas.classList.add('text-slate-400');
+        });
+        
+        tabVendas.addEventListener('click', () => {
+            vendasContent.classList.remove('hidden');
+            servicosContent.classList.add('hidden');
+            tabVendas.classList.add('active');
+            tabServicos.classList.remove('active');
+            tabServicos.classList.add('text-slate-400');
+        });
+
+        // --- LÓGICA DA ABA DE VENDAS ---
+        const produtoSelect = document.getElementById('produto-select');
+        const carroSelectContainer = document.getElementById('carro-select-container');
+        const carroSelect = document.getElementById('carro-select');
+        const produtoPreco = document.getElementById('produto-preco');
+        const produtoPrecoLabel = document.getElementById('produto-preco-label');
+        const produtoQuantidade = document.getElementById('produto-quantidade');
+        const addVendaBtn = document.getElementById('add-venda-btn');
+        const clearVendasBtn = document.getElementById('clear-vendas-btn');
+        const salesList = document.getElementById('sales-list');
+        const emptySalesMessage = document.getElementById('empty-sales-message');
+        const salesTotalVendidoEl = document.getElementById('sales-total-vendido');
+        const salesTotalComissaoEl = document.getElementById('sales-total-comissao');
+        const salesTotalReceberEl = document.getElementById('sales-total-receber');
+
+        let vendasAtuais = [];
+        
+        const produtosAVenda = {
+            'Kit Reparo': { preco: 5000, comissao: 0.20 },
+            'Pneu': { preco: 800, comissao: 0.20 },
+            'Carro': {
+                comissao: 0.50,
+                modelos: [
+                    { categoria: 'Esporte', preco: 300000, itens: ['Zentorno', 'Neon', 'Virtue', 'Windsor2', 'Entity3', 'Furia', 'Openwheel', 'Panthere', 'Sultan3', 'T20', 'Tyrus', 'Vagner'] },
+                    { categoria: 'Antigos', preco: 250000, itens: ['Zorrusso', 'Tulip2', 'Eudora', 'Issi8', 'Tahoma', 'Surfer3', 'Weevil'] },
+                    { categoria: 'Motos', preco: 180000, itens: ['Everon2', 'Batiz', 'Chimera', 'Sanchez', 'Powersi', 'Rrocket'] }
+                ]
+            }
+        };
+
+        function popularCarrosSelect() {
+            carroSelect.innerHTML = '<option value="">-- Selecione um Modelo --</option>';
+            produtosAVenda.Carro.modelos.forEach(grupo => {
+                const optgroup = document.createElement('optgroup');
+                optgroup.label = `${grupo.categoria} (${formatarMoeda(grupo.preco)})`;
+                grupo.itens.sort().forEach(carro => {
+                    const option = document.createElement('option');
+                    option.value = carro;
+                    option.dataset.preco = grupo.preco;
+                    option.textContent = carro;
+                    optgroup.appendChild(option);
+                });
+                carroSelect.appendChild(optgroup);
+            });
+        }
+
+        function atualizarUIdeVendas() {
+            const tipo = produtoSelect.value;
+            produtoPreco.value = '';
+            produtoQuantidade.value = '1';
+            
+            if (tipo === 'Carro') {
+                carroSelectContainer.classList.remove('hidden');
+                produtoQuantidade.classList.add('hidden');
+                produtoPreco.readOnly = true;
+                produtoPrecoLabel.textContent = "Valor:";
+                produtoPreco.placeholder = "Selecione um carro";
+
+            } else { // Kit Reparo ou Pneu
+                carroSelectContainer.classList.add('hidden');
+                produtoQuantidade.classList.remove('hidden');
+                produtoPreco.readOnly = true;
+                produtoPreco.value = produtosAVenda[tipo].preco;
+                produtoPrecoLabel.textContent = "Valor Unitário:";
+            }
+        }
+        
+        produtoSelect.addEventListener('change', atualizarUIdeVendas);
+        carroSelect.addEventListener('change', () => {
+            const selectedOption = carroSelect.options[carroSelect.selectedIndex];
+            if (selectedOption.value) {
+                produtoPreco.value = selectedOption.dataset.preco;
+            } else {
+                produtoPreco.value = '';
+            }
+        });
+
+        function adicionarVenda() {
+            const tipo = produtoSelect.value;
+            let nomeProduto = tipo;
+            let precoUnitario, quantidade, precoTotal;
+
+            if (tipo === 'Carro') {
+                if (!carroSelect.value) {
+                    alert('Por favor, selecione um modelo de carro.');
+                    return;
                 }
+                nomeProduto = carroSelect.value;
+                precoUnitario = parseFloat(produtoPreco.value);
+                quantidade = 1;
+            } else {
+                precoUnitario = parseFloat(produtoPreco.value);
+                quantidade = parseInt(produtoQuantidade.value);
+            }
+
+            if (isNaN(precoUnitario) || precoUnitario <= 0 || isNaN(quantidade) || quantidade <= 0) {
+                alert('Por favor, preencha os campos com valores válidos.');
+                return;
+            }
+
+            precoTotal = precoUnitario * quantidade;
+            const comissao = produtosAVenda[tipo].comissao;
+            const comissaoValor = precoTotal * comissao;
+
+            vendasAtuais.push({ 
+                tipo: tipo, 
+                nome: nomeProduto,
+                preco: precoTotal, 
+                comissao: comissaoValor, 
+                quantidade: quantidade, 
+                precoUnitario: precoUnitario 
+            });
+            
+            renderizarVendas();
+            produtoPreco.value = '';
+            produtoQuantidade.value = '1';
+            if(tipo === 'Carro') carroSelect.value = '';
+            atualizarUIdeVendas();
+        }
+
+        function renderizarVendas() {
+            salesList.innerHTML = '';
+            if (vendasAtuais.length === 0) {
+                salesList.appendChild(emptySalesMessage);
+            } else {
+                vendasAtuais.forEach((venda, index) => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center bg-slate-700 p-3 rounded-md text-sm';
+                    
+                    const quantidadeInfo = venda.quantidade > 1 ? `<span class="block text-xs text-slate-400">${venda.quantidade} un. x ${formatarMoeda(venda.precoUnitario)}</span>` : '';
+
+                    li.innerHTML = `
+                        <div>
+                            <span class="font-semibold">${venda.nome}</span>
+                            ${quantidadeInfo}
+                            <span class="block text-xs text-slate-400">Comissão: ${formatarMoeda(venda.comissao)}</span>
+                        </div>
+                        <div class="text-right">
+                           <span class="font-semibold">${formatarMoeda(venda.preco)}</span>
+                           <button data-index="${index}" class="remover-venda-btn text-red-400 hover:text-red-300 font-bold text-xl leading-none px-2 ml-2">&times;</button>
+                        </div>
+                    `;
+                    salesList.appendChild(li);
+                });
+            }
+            calcularEAtualizarTotaisVenda();
+        }
+
+        function calcularEAtualizarTotaisVenda() {
+            const totalVendido = vendasAtuais.reduce((soma, item) => soma + item.preco, 0);
+            const totalComissao = vendasAtuais.reduce((soma, item) => soma + item.comissao, 0);
+            const totalReceber = totalVendido - totalComissao;
+
+            salesTotalVendidoEl.textContent = formatarMoeda(totalVendido);
+            salesTotalComissaoEl.textContent = formatarMoeda(totalComissao);
+            salesTotalReceberEl.textContent = formatarMoeda(totalReceber);
+        }
+        
+        function limparVendas() {
+            vendasAtuais = [];
+            renderizarVendas();
+        }
+
+        addVendaBtn.addEventListener('click', adicionarVenda);
+        clearVendasBtn.addEventListener('click', limparVendas);
+        salesList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remover-venda-btn')) {
+                vendasAtuais.splice(e.target.dataset.index, 1);
+                renderizarVendas();
             }
         });
 
@@ -355,12 +548,15 @@
             carregarServicos();
             popularServicos();
             renderizarOrdem();
+            
+            popularCarrosSelect();
+            atualizarUIdeVendas();
+            renderizarVendas(); 
         });
 
         // --- LÓGICA DO PWA (SERVICE WORKER) ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // AQUI ESTÁ A CORREÇÃO
                 navigator.serviceWorker.register('service-worker.js').then(registration => {
                     console.log('ServiceWorker registado com sucesso:', registration.scope);
                 }, err => {
