@@ -1,11 +1,13 @@
 // service-worker.js
 
-const CACHE_NAME = 'bennys-os-cache-v1';
-// Lista de ficheiros essenciais para guardar em cache.
+const CACHE_NAME = 'bennys-os-cache-v2'; // Mudei a versão para forçar a atualização
+// Lista de ficheiros essenciais para guardar em cache (caminhos relativos)
 const urlsToCache = [
-  '/',
-  '/index.html',
-  // Pode adicionar aqui ficheiros CSS ou outros scripts se os tiver separado.
+  './',
+  './index.html',
+  './manifest.json',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png'
 ];
 
 // Evento de instalação: guarda os ficheiros em cache.
@@ -24,13 +26,28 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Se encontrarmos o ficheiro na cache, retornamo-lo.
         if (response) {
           return response;
         }
-        // Caso contrário, tentamos obtê-lo da rede.
         return fetch(event.request);
       }
     )
   );
 });
+
+// Evento de ativação: limpa caches antigas.
+self.addEventListener('activate', event => {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
