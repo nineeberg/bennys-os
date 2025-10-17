@@ -31,11 +31,16 @@
             background-color: #2563eb;
             color: white;
         }
+        /* Ajuste para altura de ecrã em telemóveis */
+        .main-container {
+             min-height: 100vh; /* Fallback */
+             min-height: 100svh;
+        }
     </style>
 </head>
 <body class="text-white">
 
-    <div class="container mx-auto max-w-lg min-h-screen flex flex-col bg-slate-900">
+    <div class="main-container container mx-auto max-w-lg flex flex-col bg-slate-900">
         <!-- CABEÇALHO -->
         <header class="text-center p-4 pt-6 relative">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-slate-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,16 +91,15 @@
             <!-- CONTEÚDO DA ABA DE VENDAS -->
             <div id="vendas-tab" class="hidden">
                  <div class="bg-slate-800 p-4 rounded-lg shadow-lg mb-4">
-                    <div class="space-y-4">
-                        <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="flex-grow">
                             <label for="produto-select" class="block mb-2 text-sm font-medium text-gray-300">Tipo de Produto:</label>
                             <select id="produto-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                <option value="Carro">Carro</option>
-                                <option value="Kit Reparo">Kit Reparo</option>
-                                <option value="Pneu">Pneu</option>
                             </select>
                         </div>
-
+                        <button id="manage-products-btn" class="self-end bg-gray-600 hover:bg-gray-700 text-white font-bold py-2.5 px-4 rounded-lg transition-colors duration-200">Gerir</button>
+                    </div>
+                    <div class="space-y-4">
                         <div id="carro-select-container" class="hidden">
                             <label for="carro-select" class="block mb-2 text-sm font-medium text-gray-300">Selecione o Carro:</label>
                             <select id="carro-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"></select>
@@ -108,7 +112,7 @@
                             </div>
                              <div>
                                 <label for="produto-quantidade" class="block mb-2 text-sm font-medium text-gray-300">Quantidade:</label>
-                                <input type="number" id="produto-quantidade" value="1" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Qtd.">
+                                <input type="number" id="produto-quantidade" value="1" min="1" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Qtd.">
                             </div>
                         </div>
                     </div>
@@ -141,35 +145,85 @@
         </div>
     </div>
     
-    <!-- Modal Gerir Itens (para Serviços) -->
+    <!-- Modal Gerir Itens de Serviço -->
     <div id="manage-modal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 hidden modal-fade-in">
-        <div class="bg-slate-800 rounded-lg shadow-2xl w-full max-w-md">
+        <div class="bg-slate-800 rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
             <div class="p-4 border-b border-slate-700 flex justify-between items-center">
                 <h2 class="text-xl font-bold">Gerir Itens de Serviço</h2>
                 <button id="close-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
             </div>
-            <div class="p-4 space-y-4">
-                <h3 class="font-semibold">Adicionar Novo Item</h3>
-                <div>
-                    <label for="new-item-name" class="block mb-1 text-sm font-medium text-gray-400">Nome do Item</label>
-                    <input type="text" id="new-item-name" placeholder="Ex: Reparo Avançado" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+            <div class="overflow-y-auto">
+                <div class="p-4 space-y-4">
+                    <h3 class="font-semibold">Adicionar Novo Serviço</h3>
+                    <div>
+                        <label for="new-item-name" class="block mb-1 text-sm font-medium text-gray-400">Nome do Serviço</label>
+                        <input type="text" id="new-item-name" placeholder="Ex: Reparo Avançado" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                    </div>
+                    <div>
+                        <label for="new-item-price" class="block mb-1 text-sm font-medium text-gray-400">Preço</label>
+                        <input type="number" id="new-item-price" placeholder="Ex: 15000" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                    </div>
+                    <div>
+                        <label for="category-select" class="block mb-1 text-sm font-medium text-gray-400">Categoria</label>
+                        <select id="category-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full"></select>
+                    </div>
+                    <div>
+                       <input type="text" id="new-category-name-input" placeholder="Nome da Nova Categoria" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full hidden">
+                    </div>
+                    <button id="save-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Salvar Novo Serviço</button>
                 </div>
-                <div>
-                    <label for="new-item-price" class="block mb-1 text-sm font-medium text-gray-400">Preço</label>
-                    <input type="number" id="new-item-price" placeholder="Ex: 15000" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                <div class="p-4 border-t border-slate-700">
+                     <h3 class="font-semibold mb-2">Remover Serviço Existente</h3>
+                     <div class="max-h-48 overflow-y-auto" id="deletable-items-list"></div>
                 </div>
-                <div>
-                    <label for="category-select" class="block mb-1 text-sm font-medium text-gray-400">Categoria</label>
-                    <select id="category-select" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full"></select>
-                </div>
-                <div>
-                   <input type="text" id="new-category-name-input" placeholder="Nome da Nova Categoria" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full hidden">
-                </div>
-                <button id="save-new-item-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Salvar Novo Item</button>
             </div>
-            <div class="p-4 border-t border-slate-700">
-                 <h3 class="font-semibold mb-2">Remover Item Existente</h3>
-                 <div class="max-h-48 overflow-y-auto" id="deletable-items-list"></div>
+        </div>
+    </div>
+    
+    <!-- Modal Gerir Produtos de Venda -->
+    <div id="manage-products-modal" class="fixed inset-0 modal-bg flex items-center justify-center p-4 hidden modal-fade-in">
+        <div class="bg-slate-800 rounded-lg shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center">
+                <h2 class="text-xl font-bold">Gerir Produtos de Venda</h2>
+                <button id="close-products-modal-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="overflow-y-auto">
+                <div class="p-4 space-y-4">
+                    <h3 class="font-semibold border-b border-slate-700 pb-2 mb-4">Gerir Itens</h3>
+                    <div id="deletable-fixed-items-list" class="space-y-2"></div>
+                    <div class="pt-4 border-t border-slate-700 space-y-3">
+                         <h4 class="font-semibold text-sm">Adicionar Novo Item</h4>
+                         <input type="text" id="new-fixed-item-name" placeholder="Nome do Item" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                         <div class="grid grid-cols-2 gap-2">
+                             <input type="number" id="new-fixed-item-price" placeholder="Preço" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                             <input type="number" id="new-fixed-item-commission" placeholder="Comissão (%)" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                         </div>
+                         <button id="save-new-fixed-item-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Salvar Novo Item</button>
+                    </div>
+                </div>
+                <div class="p-4 border-t border-slate-700 space-y-4">
+                    <h3 class="font-semibold">Adicionar Novo Carro</h3>
+                    <div>
+                        <label for="new-car-name" class="block mb-1 text-sm font-medium text-gray-400">Nome do Carro</label>
+                        <input type="text" id="new-car-name" placeholder="Ex: Zentorno" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                    </div>
+                     <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="new-car-category" class="block mb-1 text-sm font-medium text-gray-400">Categoria</label>
+                            <select id="new-car-category" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full"></select>
+                        </div>
+                        <div>
+                            <label for="new-car-price" class="block mb-1 text-sm font-medium text-gray-400">Preço da Categoria</label>
+                            <input type="number" id="new-car-price" placeholder="Ex: 300000" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full">
+                        </div>
+                    </div>
+                    <input type="text" id="new-car-category-input" placeholder="Nome da Nova Categoria" class="bg-gray-700 border border-slate-600 text-white text-sm rounded-lg p-2.5 w-full hidden">
+                    <button id="save-new-car-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Salvar Novo Carro</button>
+                </div>
+                <div class="p-4 border-t border-slate-700">
+                     <h3 class="font-semibold mb-2">Remover Carro Existente</h3>
+                     <div class="max-h-48 overflow-y-auto" id="deletable-cars-list"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -203,13 +257,7 @@
             if (servicosSalvos && JSON.parse(servicosSalvos).length > 0) {
                 servicos = JSON.parse(servicosSalvos);
             } else {
-                servicos = [
-                    { categoria: 'Performance e Motor', itens: [ { nome: 'Motor', preco: 18000 }, { nome: 'Freios', preco: 18000 }, { nome: 'Transmissão', preco: 19000 }, { nome: 'Suspensão', preco: 5000 }, { nome: 'Turbo', preco: 30000 }, ]},
-                    { categoria: 'Estética e Customização', itens: [ { nome: 'Buzina', preco: 800 }, { nome: 'Farol', preco: 18000 }, { nome: 'Placa', preco: 2500 }, { nome: 'Neon', preco: 10000 }, { nome: 'Pintura', preco: 6000 }, { nome: 'Pintura Cromada', preco: 9000 }, { nome: 'Chassi', preco: 4000 }, { nome: 'Rodas', preco: 13000 }, ]},
-                    { categoria: 'Segurança e Utilidades', itens: [ { nome: 'Blindagem', preco: 30000 }, { nome: 'Rastreador', preco: 10000 }, ]},
-                    { categoria: 'Reparos e Pacotes', itens: [ { nome: 'Reparo Sul', preco: 5000 }, { nome: 'Reparo Norte', preco: 8000 }, { nome: 'Full Tuning Carro', preco: 90000 }, { nome: 'Full Tuning Moto', preco: 60000 }, ]},
-                    { categoria: 'Outros', itens: [ { nome: 'Outros', preco: 4000 }, ]}
-                ];
+                servicos = [ { categoria: 'Performance e Motor', itens: [ { nome: 'Motor', preco: 18000 }, { nome: 'Freios', preco: 18000 }, { nome: 'Transmissão', preco: 19000 }, { nome: 'Suspensão', preco: 5000 }, { nome: 'Turbo', preco: 30000 }, ]}, { categoria: 'Estética e Customização', itens: [ { nome: 'Buzina', preco: 800 }, { nome: 'Farol', preco: 18000 }, { nome: 'Placa', preco: 2500 }, { nome: 'Neon', preco: 10000 }, { nome: 'Pintura', preco: 6000 }, { nome: 'Pintura Cromada', preco: 9000 }, { nome: 'Chassi', preco: 4000 }, { nome: 'Rodas', preco: 13000 }, ]}, { categoria: 'Segurança e Utilidades', itens: [ { nome: 'Blindagem', preco: 30000 }, { nome: 'Rastreador', preco: 10000 }, ]}, { categoria: 'Reparos e Pacotes', itens: [ { nome: 'Reparo Sul', preco: 5000 }, { nome: 'Reparo Norte', preco: 8000 }, { nome: 'Full Tuning Carro', preco: 90000 }, { nome: 'Full Tuning Moto', preco: 60000 }, ]}, { categoria: 'Outros', itens: [ { nome: 'Outros', preco: 4000 }, ]} ];
                 salvarServicos();
             }
         }
@@ -386,21 +434,46 @@
         const salesTotalVendidoEl = document.getElementById('sales-total-vendido');
         const salesTotalComissaoEl = document.getElementById('sales-total-comissao');
         const salesTotalReceberEl = document.getElementById('sales-total-receber');
-
-        let vendasAtuais = [];
+        const manageProductsBtn = document.getElementById('manage-products-btn');
+        const manageProductsModal = document.getElementById('manage-products-modal');
+        const closeProductsModalBtn = document.getElementById('close-products-modal-btn');
         
-        const produtosAVenda = {
-            'Kit Reparo': { preco: 5000, comissao: 0.20 },
-            'Pneu': { preco: 800, comissao: 0.20 },
-            'Carro': {
-                comissao: 0.50,
-                modelos: [
-                    { categoria: 'Esporte', preco: 300000, itens: ['Zentorno', 'Neon', 'Virtue', 'Windsor2', 'Entity3', 'Furia', 'Openwheel', 'Panthere', 'Sultan3', 'T20', 'Tyrus', 'Vagner'] },
-                    { categoria: 'Antigos', preco: 250000, itens: ['Zorrusso', 'Tulip2', 'Eudora', 'Issi8', 'Tahoma', 'Surfer3', 'Weevil'] },
-                    { categoria: 'Motos', preco: 180000, itens: ['Everon2', 'Batiz', 'Chimera', 'Sanchez', 'Powersi', 'Rrocket'] }
-                ]
+        let vendasAtuais = [];
+        let produtosAVenda = {};
+
+        function carregarProdutos() {
+            const produtosSalvos = localStorage.getItem('bennys_produtos_v2'); // Versão nova
+            if (produtosSalvos) {
+                produtosAVenda = JSON.parse(produtosSalvos);
+            } else {
+                produtosAVenda = {
+                    itensFixos: [
+                        { nome: 'Kit Reparo', preco: 5000, comissao: 0.20 },
+                        { nome: 'Pneu', preco: 800, comissao: 0.20 }
+                    ],
+                    Carro: {
+                        comissao: 0.50,
+                        modelos: [
+                            { categoria: 'Esporte', preco: 300000, itens: ['Zentorno', 'Neon', 'Virtue', 'Windsor2', 'Entity3', 'Furia', 'Openwheel', 'Panthere', 'Sultan3', 'T20', 'Tyrus', 'Vagner'] },
+                            { categoria: 'Antigos', preco: 250000, itens: ['Zorrusso', 'Tulip2', 'Eudora', 'Issi8', 'Tahoma', 'Surfer3', 'Weevil'] },
+                            { categoria: 'Motos', preco: 180000, itens: ['Everon2', 'Batiz', 'Chimera', 'Sanchez', 'Powersi', 'Rrocket'] }
+                        ]
+                    }
+                };
+                salvarProdutos();
             }
-        };
+        }
+
+        function salvarProdutos() {
+            localStorage.setItem('bennys_produtos_v2', JSON.stringify(produtosAVenda));
+        }
+        
+        function popularProdutoSelect() {
+            produtoSelect.innerHTML = '<option value="Carro">Carro</option>';
+            produtosAVenda.itensFixos.forEach(item => {
+                produtoSelect.innerHTML += `<option value="${item.nome}">${item.nome}</option>`;
+            });
+        }
 
         function popularCarrosSelect() {
             carroSelect.innerHTML = '<option value="">-- Selecione um Modelo --</option>';
@@ -425,16 +498,16 @@
             
             if (tipo === 'Carro') {
                 carroSelectContainer.classList.remove('hidden');
-                produtoQuantidade.classList.add('hidden');
+                produtoQuantidade.parentElement.classList.add('hidden');
                 produtoPreco.readOnly = true;
                 produtoPrecoLabel.textContent = "Valor:";
                 produtoPreco.placeholder = "Selecione um carro";
-
-            } else { // Kit Reparo ou Pneu
+            } else { // Item Fixo
                 carroSelectContainer.classList.add('hidden');
-                produtoQuantidade.classList.remove('hidden');
+                produtoQuantidade.parentElement.classList.remove('hidden');
                 produtoPreco.readOnly = true;
-                produtoPreco.value = produtosAVenda[tipo].preco;
+                const item = produtosAVenda.itensFixos.find(i => i.nome === tipo);
+                if (item) produtoPreco.value = item.preco;
                 produtoPrecoLabel.textContent = "Valor Unitário:";
             }
         }
@@ -442,52 +515,38 @@
         produtoSelect.addEventListener('change', atualizarUIdeVendas);
         carroSelect.addEventListener('change', () => {
             const selectedOption = carroSelect.options[carroSelect.selectedIndex];
-            if (selectedOption.value) {
-                produtoPreco.value = selectedOption.dataset.preco;
-            } else {
-                produtoPreco.value = '';
-            }
+            produtoPreco.value = selectedOption.value ? selectedOption.dataset.preco : '';
         });
 
         function adicionarVenda() {
             const tipo = produtoSelect.value;
             let nomeProduto = tipo;
-            let precoUnitario, quantidade, precoTotal;
+            let precoUnitario, quantidade, comissao;
 
             if (tipo === 'Carro') {
-                if (!carroSelect.value) {
-                    alert('Por favor, selecione um modelo de carro.');
-                    return;
-                }
+                if (!carroSelect.value) { alert('Por favor, selecione um modelo de carro.'); return; }
                 nomeProduto = carroSelect.value;
                 precoUnitario = parseFloat(produtoPreco.value);
                 quantidade = 1;
+                comissao = produtosAVenda.Carro.comissao;
             } else {
-                precoUnitario = parseFloat(produtoPreco.value);
+                const itemFixo = produtosAVenda.itensFixos.find(i => i.nome === tipo);
+                if (!itemFixo) return;
+                precoUnitario = itemFixo.preco;
                 quantidade = parseInt(produtoQuantidade.value);
+                comissao = itemFixo.comissao;
             }
 
-            if (isNaN(precoUnitario) || precoUnitario <= 0 || isNaN(quantidade) || quantidade <= 0) {
-                alert('Por favor, preencha os campos com valores válidos.');
-                return;
+            if (isNaN(precoUnitario) || precoUnitario < 0 || isNaN(quantidade) || quantidade <= 0) {
+                alert('Por favor, preencha os campos com valores válidos.'); return;
             }
 
-            precoTotal = precoUnitario * quantidade;
-            const comissao = produtosAVenda[tipo].comissao;
+            const precoTotal = precoUnitario * quantidade;
             const comissaoValor = precoTotal * comissao;
 
-            vendasAtuais.push({ 
-                tipo: tipo, 
-                nome: nomeProduto,
-                preco: precoTotal, 
-                comissao: comissaoValor, 
-                quantidade: quantidade, 
-                precoUnitario: precoUnitario 
-            });
+            vendasAtuais.push({ tipo, nome: nomeProduto, preco: precoTotal, comissao: comissaoValor, quantidade, precoUnitario });
             
             renderizarVendas();
-            produtoPreco.value = '';
-            produtoQuantidade.value = '1';
             if(tipo === 'Carro') carroSelect.value = '';
             atualizarUIdeVendas();
         }
@@ -500,20 +559,8 @@
                 vendasAtuais.forEach((venda, index) => {
                     const li = document.createElement('li');
                     li.className = 'flex justify-between items-center bg-slate-700 p-3 rounded-md text-sm';
-                    
                     const quantidadeInfo = venda.quantidade > 1 ? `<span class="block text-xs text-slate-400">${venda.quantidade} un. x ${formatarMoeda(venda.precoUnitario)}</span>` : '';
-
-                    li.innerHTML = `
-                        <div>
-                            <span class="font-semibold">${venda.nome}</span>
-                            ${quantidadeInfo}
-                            <span class="block text-xs text-slate-400">Comissão: ${formatarMoeda(venda.comissao)}</span>
-                        </div>
-                        <div class="text-right">
-                           <span class="font-semibold">${formatarMoeda(venda.preco)}</span>
-                           <button data-index="${index}" class="remover-venda-btn text-red-400 hover:text-red-300 font-bold text-xl leading-none px-2 ml-2">&times;</button>
-                        </div>
-                    `;
+                    li.innerHTML = `<div><span class="font-semibold">${venda.nome}</span>${quantidadeInfo}<span class="block text-xs text-slate-400">Comissão: ${formatarMoeda(venda.comissao)}</span></div><div class="text-right"><span class="font-semibold">${formatarMoeda(venda.preco)}</span><button data-index="${index}" class="remover-venda-btn text-red-400 hover:text-red-300 font-bold text-xl leading-none px-2 ml-2">&times;</button></div>`;
                     salesList.appendChild(li);
                 });
             }
@@ -530,10 +577,7 @@
             salesTotalReceberEl.textContent = formatarMoeda(totalReceber);
         }
         
-        function limparVendas() {
-            vendasAtuais = [];
-            renderizarVendas();
-        }
+        function limparVendas() { vendasAtuais = []; renderizarVendas(); }
 
         addVendaBtn.addEventListener('click', adicionarVenda);
         clearVendasBtn.addEventListener('click', limparVendas);
@@ -544,11 +588,167 @@
             }
         });
 
+        // --- LÓGICA DO MODAL DE GERIR PRODUTOS ---
+        const newFixedItemName = document.getElementById('new-fixed-item-name');
+        const newFixedItemPrice = document.getElementById('new-fixed-item-price');
+        const newFixedItemCommission = document.getElementById('new-fixed-item-commission');
+        const saveNewFixedItemBtn = document.getElementById('save-new-fixed-item-btn');
+        const deletableFixedItemsList = document.getElementById('deletable-fixed-items-list');
+
+        const newCarName = document.getElementById('new-car-name');
+        const newCarCategory = document.getElementById('new-car-category');
+        const newCarPrice = document.getElementById('new-car-price');
+        const newCarCategoryInput = document.getElementById('new-car-category-input');
+        const saveNewCarBtn = document.getElementById('save-new-car-btn');
+        const deletableCarsList = document.getElementById('deletable-cars-list');
+
+        function abrirModalGerirProdutos() {
+            popularListaItensFixosDeletaveis();
+            popularCarCategorySelect();
+            popularListaCarrosDeletaveis();
+            manageProductsModal.classList.remove('hidden');
+        }
+        function fecharModalGerirProdutos() { manageProductsModal.classList.add('hidden'); }
+        
+        function popularListaItensFixosDeletaveis() {
+            deletableFixedItemsList.innerHTML = '';
+            produtosAVenda.itensFixos.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-slate-700 p-2 rounded mb-2';
+                div.innerHTML = `
+                    <span>${item.nome} (${formatarMoeda(item.preco)}) - ${item.comissao * 100}%</span>
+                    <button data-name="${item.nome}" class="remover-item-fixo-btn bg-red-600 hover:bg-red-700 text-white text-xs py-1 px-2 rounded">Remover</button>
+                `;
+                deletableFixedItemsList.appendChild(div);
+            });
+        }
+        
+        function salvarNovoItemFixo() {
+            const nome = newFixedItemName.value.trim();
+            const preco = parseFloat(newFixedItemPrice.value);
+            const comissao = parseFloat(newFixedItemCommission.value) / 100;
+            if(!nome || isNaN(preco) || preco <= 0 || isNaN(comissao) || comissao < 0 || comissao > 1) {
+                alert('Preencha todos os campos do novo item com valores válidos (comissão de 0 a 100).'); return;
+            }
+            if(produtosAVenda.itensFixos.find(i => i.nome.toLowerCase() === nome.toLowerCase())) {
+                alert('Já existe um item com este nome.'); return;
+            }
+            produtosAVenda.itensFixos.push({ nome, preco, comissao });
+            salvarProdutos();
+            abrirModalGerirProdutos(); // Refresh
+            popularProdutoSelect();
+            newFixedItemName.value = ''; newFixedItemPrice.value = ''; newFixedItemCommission.value = '';
+        }
+
+        function removerItemFixo(nome) {
+            const itemIndex = produtosAVenda.itensFixos.findIndex(i => i.nome === nome);
+            if (itemIndex > -1) {
+                produtosAVenda.itensFixos.splice(itemIndex, 1);
+                salvarProdutos();
+                abrirModalGerirProdutos(); // Refresh
+                popularProdutoSelect();
+            }
+        }
+
+        function popularCarCategorySelect() {
+            newCarCategory.innerHTML = '<option value="">-- Categoria Existente --</option>';
+            const categorias = [...new Set(produtosAVenda.Carro.modelos.map(g => g.categoria))].sort();
+            categorias.forEach(cat => { newCarCategory.innerHTML += `<option value="${cat}">${cat}</option>`; });
+            newCarCategory.innerHTML += '<option value="_new_">-- Criar Nova Categoria --</option>';
+        }
+
+        newCarCategory.addEventListener('change', () => {
+            const isNew = newCarCategory.value === '_new_';
+            newCarCategoryInput.classList.toggle('hidden', !isNew);
+            newCarPrice.readOnly = !isNew;
+            if (!isNew && newCarCategory.value) {
+                const grupo = produtosAVenda.Carro.modelos.find(g => g.categoria === newCarCategory.value);
+                newCarPrice.value = grupo.preco;
+            } else {
+                newCarPrice.value = '';
+            }
+        });
+
+        function salvarNovoCarro() {
+            const nome = newCarName.value.trim();
+            const preco = parseFloat(newCarPrice.value);
+            let categoria = newCarCategory.value === '_new_' ? newCarCategoryInput.value.trim() : newCarCategory.value;
+
+            if (!nome || !categoria || isNaN(preco) || preco <= 0) {
+                alert('Preencha todos os campos do novo carro.'); return;
+            }
+
+            let grupo = produtosAVenda.Carro.modelos.find(g => g.categoria.toLowerCase() === categoria.toLowerCase());
+            if (grupo) {
+                if (grupo.preco !== preco) {
+                    alert(`O preço da categoria "${categoria}" é ${formatarMoeda(grupo.preco)}. Não é possível adicionar um carro com preço diferente.`); return;
+                }
+                if (grupo.itens.find(i => i.toLowerCase() === nome.toLowerCase())) {
+                     alert(`O carro "${nome}" já existe nesta categoria.`); return;
+                }
+                grupo.itens.push(nome);
+            } else {
+                produtosAVenda.Carro.modelos.push({ categoria, preco, itens: [nome] });
+            }
+            salvarProdutos();
+            popularCarrosSelect();
+            abrirModalGerirProdutos();
+            newCarName.value = ''; newCarPrice.value = ''; newCarCategoryInput.value = ''; newCarCategory.value = '';
+        }
+        
+        function popularListaCarrosDeletaveis() {
+            deletableCarsList.innerHTML = '';
+            produtosAVenda.Carro.modelos.forEach(grupo => {
+                grupo.itens.forEach(carro => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center bg-slate-700 p-2 rounded mb-2';
+                    div.innerHTML = `<span>${carro} <span class="text-xs text-gray-400">(${grupo.categoria})</span></span><button data-cat="${grupo.categoria}" data-car="${carro}" class="remover-carro-btn bg-red-600 hover:bg-red-700 text-white text-xs py-1 px-2 rounded">Remover</button>`;
+                    deletableCarsList.appendChild(div);
+                });
+            });
+        }
+
+        function removerCarroDoCatalogo(categoriaNome, carroNome) {
+             const grupoIndex = produtosAVenda.Carro.modelos.findIndex(g => g.categoria === categoriaNome);
+             if (grupoIndex > -1) {
+                const itemIndex = produtosAVenda.Carro.modelos[grupoIndex].itens.findIndex(i => i === carroNome);
+                if (itemIndex > -1) {
+                    produtosAVenda.Carro.modelos[grupoIndex].itens.splice(itemIndex, 1);
+                    if (produtosAVenda.Carro.modelos[grupoIndex].itens.length === 0) {
+                        produtosAVenda.Carro.modelos.splice(grupoIndex, 1);
+                    }
+                }
+             }
+             salvarProdutos();
+             popularCarrosSelect();
+             abrirModalGerirProdutos();
+        }
+
+        manageProductsBtn.addEventListener('click', abrirModalGerirProdutos);
+        closeProductsModalBtn.addEventListener('click', fecharModalGerirProdutos);
+        saveNewFixedItemBtn.addEventListener('click', salvarNovoItemFixo);
+        deletableFixedItemsList.addEventListener('click', (e) => {
+             if (e.target.classList.contains('remover-item-fixo-btn')) {
+                const name = e.target.dataset.name;
+                if (confirm(`Tem a certeza que deseja remover "${name}" do catálogo?`)) { removerItemFixo(name); }
+            }
+        });
+        saveNewCarBtn.addEventListener('click', salvarNovoCarro);
+        deletableCarsList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remover-carro-btn')) {
+                const cat = e.target.dataset.cat;
+                const car = e.target.dataset.car;
+                if (confirm(`Tem a certeza que deseja remover "${car}" do catálogo?`)) { removerCarroDoCatalogo(cat, car); }
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             carregarServicos();
             popularServicos();
             renderizarOrdem();
             
+            carregarProdutos();
+            popularProdutoSelect();
             popularCarrosSelect();
             atualizarUIdeVendas();
             renderizarVendas(); 
